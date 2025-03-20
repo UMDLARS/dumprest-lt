@@ -18,7 +18,9 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
-			   
+
+#define ARRAYSIZE(a) (sizeof(a) / sizeof(a[0]))
+
 #include "config.c"
 #include "comm.c"
 
