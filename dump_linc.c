@@ -27,6 +27,13 @@
 #define	BUFFER_SIZE	200
 unsigned char buffer[ BUFFER_SIZE ];
 
+void write_empty( FILE* outfile, unsigned int block_size )
+{
+	for( unsigned int i = 0; i < block_size; i++)
+	{
+		fputc((char)0, outfile);
+	}
+}
 
 void main( int argc, char *argv[] )
 {
@@ -46,6 +53,7 @@ void main( int argc, char *argv[] )
 	unsigned int	word;
 	unsigned int	bad_blocks;
 	unsigned int	data_sum;
+	unsigned int	skip;
 
     enum
 	{
@@ -95,6 +103,7 @@ void main( int argc, char *argv[] )
 	bad_blocks	= 0;
 	count		= 0;
 	word		= 0;
+	skip		= 0;
 
 	state		= STATE_STATUS;
 
@@ -111,10 +120,17 @@ void main( int argc, char *argv[] )
 		/* process the buffer	*/
 		for (i = 0; i < c; i++)
 		{
+			printf("%02X\n", buffer[i]);
 			switch (state)
 			{
 			case STATE_STATUS:		/* expecting status FF,FE,FD	*/
-				if      (buffer[i] == 0xFD)	/* bad data		*/	
+				if      (buffer[i] == 0xFC) /* skip block	*/
+				{
+					printf( "\nblock %4u skipped\n", block);
+					skip = 1;
+					state = STATE_BLOCK_LO;
+				}
+				else if (buffer[i] == 0xFD)	/* bad data		*/
 				{
 					printf( "\nblock %4u bad\n", block );
 					bad_blocks++;
@@ -131,6 +147,7 @@ void main( int argc, char *argv[] )
 				else
 				{
 					printf( "ERROR: expected status flag\n" );
+					fflush(stdout);
 					exit( 1 );
 				}
 
@@ -162,6 +179,14 @@ void main( int argc, char *argv[] )
 
 			case STATE_LENGTH_HI:	/* expecting hi byte of LENGTH	*/
                 word = word | (((unsigned int)buffer[i])  << 8);
+				if (skip == 1)
+				{
+					write_empty(outfile, block_size);	/* write an empty block then restart */
+					state = STATE_STATUS;	/* reset to status read. */
+					block++;
+					skip = 0;	/* clear skip */
+					break;
+				}
 				if (block_size == 0)
 				{
 					block_size = word;
@@ -173,6 +198,7 @@ void main( int argc, char *argv[] )
 							block_size, word );
 					exit( 1 );
 				}
+
 				count = block_size;		/* setup data counter	*/
 				state = STATE_DATA_1;
 				break;
