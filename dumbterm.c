@@ -33,9 +33,7 @@ int terminate = 0;
 #define STDOUT_FILENO 0
 #endif
 
-main(argc,argv)
-   int argc;
-   char *argv[];
+int main(int argc, char *argv[])
 {
    int fd;
    char serial_dev[256];

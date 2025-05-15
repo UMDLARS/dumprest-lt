@@ -125,11 +125,7 @@ int getchar_nonblock(void) {
 int init_comm(char *, long, int);
 #endif
 
-int init_comm(port,baud,two_stop)
-   char *port;
-   long baud;
-   int two_stop;
-
+int init_comm(char *port, long baud, int two_stop)
 {
    struct termios tios;              /* Serial port TERMIO structure */
    int port_fd;

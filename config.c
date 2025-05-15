@@ -69,10 +69,7 @@ struct {
 void setup_config(long *,int *,char *);
 #endif
 
-void setup_config(baud,two_stop,serial_dev)
-   long *baud;
-   int *two_stop;
-   char *serial_dev;
+void setup_config(long *baud, int *two_stop, char *serial_dev)
 {
    FILE *config;
    char homeloc[256];

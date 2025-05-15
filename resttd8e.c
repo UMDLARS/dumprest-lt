@@ -31,9 +31,7 @@ int terminate = 0;
 #include "config.c"
 #include "comm.c"
 
-main(argc,argv)
-   int argc;
-   char *argv[];
+int main(int argc, char *argv[])
 {
    int fd;
    FILE *in;

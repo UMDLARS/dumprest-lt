@@ -16,7 +16,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
    int fdin,fdout;
    struct stat statbuf;
