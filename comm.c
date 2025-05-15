@@ -166,7 +166,7 @@ int init_comm(char *port, long baud, int two_stop)
 
 struct termios orig_tios;              /* Serial port TERMIO structure */
 
-void restore_termio() {
+void restore_termio(int) {
    if (tcsetattr(STDIN_FILENO,TCSANOW,&orig_tios) < 0) {
       perror("restore_termio: tcsetattr failed");
       exit(1);
